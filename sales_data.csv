@@ -1,0 +1,23 @@
+product_name,quantity_sold,price,date_of_sale
+iPhone 12,10,999,2023-01-05
+Samsung Galaxy S21,5,899,2023-01-10
+Google Pixel 5,8,699,2023-02-02
+iPad Pro,3,1299,2023-02-10
+MacBook Pro,12,1999,2023-03-15
+Sony PlayStation 5,6,499,2023-03-20
+Apple Watch Series 6,7,399,2023-04-08
+Samsung QLED TV,10,1499,2023-04-12
+Nintendo Switch,4,299,2023-05-02
+iPhone 12,10,999,2022-01-05
+Samsung Galaxy S21,5,899,2022-01-10
+Google Pixel 5,8,699,2021-02-02
+iPad Pro,3,1299,2021-02-10
+MacBook Pro,12,1999,2020-03-15
+Sony PlayStation 5,6,499,2020-03-20
+Apple Watch Series 6,7,399,2019-04-08
+Samsung QLED TV,10,1499,2019-04-12
+iPad Pro,4,299,2018-05-02
+Nintendo Switch,,299,2018-05-02
+Samsung QLED TV,10,,2019-04-12
+iPhone 12,,,2023-01-05
+MacBook Pro,12,1999,
