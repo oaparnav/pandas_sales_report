@@ -54,7 +54,7 @@ def plot_graph():
 
 def total_sales_report_by_product(dataframe):
     global totalSalesGroup
-    totalSalesGroup = dataframe.groupby('product_name')['Total'].sum()
+    totalSalesGroup = dataframe.groupby('=product_name')['Total'].sum()
 
 def monthly_sales_report(dataframe):
     global monthlySalesGroup
