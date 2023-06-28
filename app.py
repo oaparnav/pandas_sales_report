@@ -38,7 +38,7 @@ class Sales:
 
     # draw plot charts for each data
     def drawPlotChart(self):
-        pdf_file = 'combined_graphs.pdf'
+        pdf_file = 'sales_report.pdf'
         pdf_pages = PdfPages(pdf_file)
         fig, axes = plt.subplots(2, 2, figsize=(12, 8))
         plots = [
