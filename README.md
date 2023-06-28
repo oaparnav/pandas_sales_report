@@ -16,12 +16,12 @@ Make sure to install the dependencies specified in the requirements.txt file. Yo
 
 Navigate to the project directory and run the 'app.py' script:
 <br><em><strong>python app.py</em></strong>
-<br><br>This will execute the script and generate the sales report.
+<br><br>This will execute the script and generate the sales report.<br><br>
+![sales report](https://github.com/EeswarKV/pandas_sales_report/blob/main/sample_report.png?raw=true)
 
 ## Step 4: Check the Generated Sales Report in PDF
 
 After running the script, check the generated sales report in PDF format. The report should be saved in the specified location.
 <br><em><strong>sales_report.pdf</em></strong><br><br>
-![sales report](https://github.com/EeswarKV/pandas_sales_report/blob/main/sample_report.png?raw=true)
 
 That's it! You have successfully generated the sales report.
