@@ -13,12 +13,28 @@ class Sales:
         self.total_prices_per_year = {}
         self.average_prices = {}
         self.sales_distribution = {}
-        
+
     # get sales info from csv and update to db
     def get_sales_data(self, use_cols=["product_name", "quantity_sold", "price", "date_of_sale"]):
         self.sales_data = pd.read_csv(
             'sales_data.csv', usecols=use_cols).dropna()
         set_data_to_db(self.sales_data.to_dict(orient='records'))
+
+    # create a data set from database to generate graphs
+    def generic_product_set(self):
+        product_set = retrieve_info_from_table('sales', 'salestable')
+        for name, price, quantity, year in [(item[0], item[1], item[2], pd.to_datetime(str(item[3])).year) for item in product_set]:
+            total = price * quantity
+            self.total_prices[name] = self.total_prices.get(name, 0) + total
+            self.total_prices_per_year[year] = self.total_prices_per_year.get(
+                year, 0) + total
+            self.sales_distribution[name] = self.sales_distribution.get(
+                name, []) + [quantity]
+        self.sales_distribution = {
+            name: sum(quantities) for name, quantities in self.sales_distribution.items()}
+        self.average_prices = {
+            name: self.total_prices[name] / self.sales_distribution[name] for name in self.total_prices}
+        self.drawPlotChart()
 
     # draw plot charts for each data
     def drawPlotChart(self):
@@ -49,23 +65,7 @@ class Sales:
         pdf_pages.close()
         print("Combined graphs saved as PDF:", pdf_file)
 
-    # create a data set from database to generate graphs
-    def generic_product_set(self):
-        product_set = retrieve_info_from_table('sales', 'salestable')
-        for name, price, quantity, year in [(item[0], item[1], item[2], pd.to_datetime(str(item[3])).year) for item in product_set]:
-            total = price * quantity
-            self.total_prices[name] = self.total_prices.get(name, 0) + total
-            self.total_prices_per_year[year] = self.total_prices_per_year.get(
-                year, 0) + total
-            self.sales_distribution[name] = self.sales_distribution.get(
-                name, []) + [quantity]
-        self.sales_distribution = {
-            name: sum(quantities) for name, quantities in self.sales_distribution.items()}
-        self.average_prices = {
-            name: self.total_prices[name] / self.sales_distribution[name] for name in self.total_prices}
-        self.drawPlotChart()
-
-    # store processd information to db by creating tables
+    # store processed information to db by creating tables
     def set_processed_data_to_db(self):
         data_to_store = {
             'products': self.total_prices,
