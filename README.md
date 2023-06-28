@@ -1,6 +1,6 @@
 # Sales Report Generation
 
-## Project Goal
+## Project Objective
 
 The goal of this project is to generate a comprehensive sales report using sales data stored in a CSV file. The project aims to achieve the following steps:
 
