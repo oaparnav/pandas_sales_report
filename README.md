@@ -21,7 +21,7 @@ Navigate to the project directory and run the 'app.py' script:
 ## Step 4: Check the Generated Sales Report in PDF
 
 After running the script, check the generated sales report in PDF format. The report should be saved in the specified location.
-<br><em><strong>sales_report.pdf</em></strong>
-<br>![sales report](https://github.com/EeswarKV/pandas_sales_report/blob/main/sample_report.png?raw=true)
+<br><em><strong>sales_report.pdf</em></strong><br><br>
+![sales report](https://github.com/EeswarKV/pandas_sales_report/blob/main/sample_report.png?raw=true)
 
 That's it! You have successfully generated the sales report.
