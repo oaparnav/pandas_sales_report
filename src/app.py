@@ -3,9 +3,14 @@ import matplotlib.pyplot as plt
 import logging
 from matplotlib.backends.backend_pdf import PdfPages
 from access_database import set_data_to_db, retrieve_info_from_table, set_processed_data_to_db
+import os
 
 # Configure logging
-logging.basicConfig(filename='audit.log', level=logging.INFO,
+# Create the "log" folder
+output_folder = 'log'
+if not os.path.exists(output_folder):
+    os.makedirs(output_folder)
+logging.basicConfig(filename=f'{output_folder}/audit.log', level=logging.INFO,
                     format='%(asctime)s - %(levelname)s - %(message)s')
 
 
@@ -20,7 +25,7 @@ class Sales:
         self.sales_distribution = {}
 
     # get sales info from csv and update to db
-    def get_sales_data(self, csv_file='sales_data.csv'):
+    def get_sales_data(self, csv_file='src/input/sales_data.csv'):
         try:
             logging.info(
                 "Initiating the process of sales data from csv file to store in the database.")
@@ -35,30 +40,34 @@ class Sales:
     # create a data set from database to generate graphs
     def generic_product_set(self):
         try:
-            product_set = retrieve_info_from_table('sales', 'salestable')
-            for name, price, quantity, year in [(item[0], item[1], item[2], pd.to_datetime(str(item[3])).year) for item in product_set]:
-                total = price * quantity
-                self.total_prices_per_product[name] = self.total_prices_per_product.get(
-                    name, 0) + total
-                self.total_prices_per_year[year] = self.total_prices_per_year.get(
-                    year, 0) + total
-                self.sales_distribution[name] = self.sales_distribution.get(
-                    name, []) + [quantity]
-            self.sales_distribution = {
-                name: sum(quantities) for name, quantities in self.sales_distribution.items()}
-            self.average_prices = {
-                name: self.total_prices_per_product[name] / self.sales_distribution[name] for name in self.total_prices_per_product}
-            logging.info("Sales processed data set created succesfully.")
+            self.sales_data['Total'] = self.sales_data['quantity_sold'] * \
+                self.sales_data['price']
+            self.sales_data['date_of_sale'] = pd.to_datetime(
+                self.sales_data.date_of_sale, format='%Y-%m-%d')
+            self.total_prices_per_product = self.sales_data.groupby('product_name')[
+                'Total'].sum().to_dict()
+            self.total_prices_per_year = self.sales_data.groupby(
+                'product_name')['Total'].mean().to_dict()
+            self.average_prices = self.sales_data.groupby(
+                'product_name')['Total'].mean().to_dict()
+            self.sales_distribution = self.sales_data.groupby(
+                'product_name')['quantity_sold'].mean().to_dict()
+            logging.info("Sales processed data set created successfully.")
             self.drawPlotChart()
         except Exception as e:
             logging.error(
-                "An error occurred while generating the data set:", str(e))
+                "An error occurred while generating the data set: " + str(e))
 
     # draw plot charts for each data
+
     def drawPlotChart(self):
+        # Create the "output" folder
+        output_folder = 'output'
+        if not os.path.exists(output_folder):
+            os.makedirs(output_folder)
         try:
             logging.info("Initiated process to generate sales report")
-            pdf_file = 'sales_report.pdf'
+            pdf_file = f'{output_folder}/sales_report.pdf'
             pdf_pages = PdfPages(pdf_file)
             fig, axes = plt.subplots(2, 2, figsize=(12, 8))
             plots = [
