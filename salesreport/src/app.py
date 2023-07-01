@@ -1,13 +1,15 @@
+# app.py
+
+from src import access_database as ad
+import os
+from matplotlib.backends.backend_pdf import PdfPages
 import pandas as pd
 import matplotlib.pyplot as plt
 import logging
-from matplotlib.backends.backend_pdf import PdfPages
-from access_database import set_data_to_db, retrieve_info_from_table, set_processed_data_to_db
-import os
 
 # Configure logging
 # Create the "log" folder
-output_folder = 'log'
+output_folder = 'salesreport/log'
 if not os.path.exists(output_folder):
     os.makedirs(output_folder)
 logging.basicConfig(filename=f'{output_folder}/audit.log', level=logging.INFO,
@@ -15,8 +17,7 @@ logging.basicConfig(filename=f'{output_folder}/audit.log', level=logging.INFO,
 
 
 class Sales:
-
-    # intialization of variables
+    # initialization of variables
     def __init__(self):
         self.sales_data = pd.DataFrame()
         self.total_prices_per_product = {}
@@ -25,12 +26,12 @@ class Sales:
         self.sales_distribution = {}
 
     # get sales info from csv and update to db
-    def get_sales_data(self, csv_file='src/input/sales_data.csv'):
+    def get_sales_data(self, csv_file='salesreport/src/input/sales_data.csv'):  # Updated file path
         try:
             logging.info(
                 "Initiating the process of sales data from csv file to store in the database.")
             self.sales_data = pd.read_csv(csv_file).dropna()
-            set_data_to_db(self.sales_data.to_dict(orient='records'))
+            ad.set_data_to_db(self.sales_data.to_dict(orient='records'))
         except FileNotFoundError:
             logging.error("Error: sales_data.csv file not found.")
         except Exception as e:
@@ -59,10 +60,9 @@ class Sales:
                 "An error occurred while generating the data set: " + str(e))
 
     # draw plot charts for each data
-
     def drawPlotChart(self):
         # Create the "output" folder
-        output_folder = 'output'
+        output_folder = 'salesreport/output'
         if not os.path.exists(output_folder):
             os.makedirs(output_folder)
         try:
@@ -109,27 +109,21 @@ class Sales:
                 'quantity': self.sales_distribution
             }
             for table_name, data in data_to_store.items():
-                set_processed_data_to_db(
+                ad.set_processed_data_to_db(
                     dbname, f"{table_prefix}{table_name}", data)
         except Exception as e:
             logging.error(
                 "An error occurred while intiating of storing processed data:", str(e))
 
-    # reteieve the processed info from table if required(testing purpose)
+    # retrieve the processed info from table if required (testing purpose)
     def retrieve_info_from_table_data(self, dbname='total_sales', table_prefix=''):
         try:
             logging.info(
                 "Successfully initiated the process of retrieving information")
             tables_to_retrieve = ['products', 'years', 'average', 'quantity']
             for table_name in tables_to_retrieve:
-                retrieve_info_from_table(dbname, f"{table_prefix}{table_name}")
+                ad.retrieve_info_from_table(
+                    dbname, f"{table_prefix}{table_name}")
         except Exception as e:
-            logging.error(
-                "An error occurred while process of intiating retrieving information from the table:", str(e))
-
-
-sales_info = Sales()
-sales_info.get_sales_data()
-sales_info.generic_product_set()
-sales_info.set_processed_info_to_db()
-sales_info.retrieve_info_from_table_data()
+            logging.error("An error occurred while the process of initiating retrieving information from the table:",
+                          str(e))
