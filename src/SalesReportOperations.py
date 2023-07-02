@@ -19,12 +19,13 @@ class DataManipulator:
         sorted_tuple = sorted(processed_sales_info, key=lambda item: item[1]) 
         group_by_product = groupby(sorted_tuple, key = lambda item : item[1])
         
+        
         for product, values in group_by_product:
             total_Amount = 0
             total_quantity = 0
             for quantity, total in [(field[2], field[5]) for field in values]:
-                total_quantity = total_quantity + quantity
-                total_Amount = total_Amount + total
+                total_quantity += (lambda x : quantity)(quantity)
+                total_Amount += (lambda x : total)(total)
             #calculate total sales amount of each product
             self.totalSalesGroup.append((product, total_Amount))
             
